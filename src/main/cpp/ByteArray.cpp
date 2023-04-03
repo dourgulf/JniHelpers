@@ -94,6 +94,7 @@ void ByteArray::set(void *data, const size_t numBytes, bool copyData) {
 void ByteArray::set(JNIEnv *env, jbyteArray data) {
   if (_data != NULL) {
     free(_data);
+    _data = NULL;
   }
 
   if (data != NULL) {

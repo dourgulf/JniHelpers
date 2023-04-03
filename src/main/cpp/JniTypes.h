@@ -44,6 +44,8 @@
 #define kTypeVoid "V"
 /** @brief Java String class */
 #define kTypeString "java/lang/String"
+/** @brief byte array*/
+#define kByteArray "[B"
 /** @brief Java base Object class */
 #define kTypeObject "java/lang/Object"
 

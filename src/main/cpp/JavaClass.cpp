@@ -22,6 +22,7 @@
 #include "JavaClass.h"
 #include "JavaClassUtils.h"
 #include "JavaExceptionUtils.h"
+#include "ByteArray.h"
 #include <string.h>
 
 namespace spotify {
@@ -90,7 +91,11 @@ void JavaClass::setJavaObject(JNIEnv *env, jobject javaThis) {
       if (TYPE_EQUALS(mapping->type, kTypeInt)) {
         int *address = static_cast<int*>(mapping->address);
         *address = env->GetIntField(javaThis, field);
-      } else if (TYPE_EQUALS(mapping->type, kTypeShort)) {
+      } else if (TYPE_EQUALS(mapping->type, kTypeLong)) {
+        jlong *address = static_cast<jlong*>(mapping->address);
+        *address = env->GetLongField(javaThis, field);
+      }
+      else if (TYPE_EQUALS(mapping->type, kTypeShort)) {
         short *address = static_cast<short*>(mapping->address);
         *address = env->GetShortField(javaThis, field);
       } else if (TYPE_EQUALS(mapping->type, kTypeBool)) {
@@ -177,6 +182,14 @@ jobject JavaClass::toJavaObject(JNIEnv *env, jobject javaThis) {
       } else if (TYPE_EQUALS(mapping->type, kTypeChar)) {
         wchar_t *address = static_cast<wchar_t*>(mapping->address);
         env->SetCharField(javaThis, field, *address);
+      } else if (TYPE_EQUALS(mapping->type, kByteArray)) {
+        ByteArray *address = static_cast<ByteArray *>(mapping->address);
+        env->SetObjectField(javaThis,
+                            field,
+                            address->toJavaByteArray(env).get());
+      } else if (TYPE_EQUALS(mapping->type, kTypeLong)) {
+        jlong *address = static_cast<jlong *>(mapping->address);
+        env->SetLongField(javaThis, field, *address);
       } else {
         LOG_ERROR("Unable to copy data to field '%s'", key.c_str());
       }
